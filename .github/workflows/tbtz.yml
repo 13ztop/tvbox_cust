@@ -208,7 +208,7 @@ jobs:
           echo "CURRENT_TIME=$CURRENT_TIME" >> $GITHUB_ENV
           echo "CURRENT_TIME_SHORT=$CURRENT_TIME_SHORT" >> $GITHUB_ENV
 
-      # 步骤 15: 最终通知 (仅当配置了Telegram时发送) - 已修复链接
+      # 步骤 15: 最终通知 (优化版)
       - name: Final Telegram Notification
         if: ${{ always() && env.BOT_TOKEN_PART != '' }}
         uses: appleboy/telegram-action@v1.0.0
@@ -219,14 +219,15 @@ jobs:
           message: |
             ${{ job.status == 'success' && '✅' || '‼️' }} *TVBox 同步报告 | ${{ env.CURRENT_TIME_SHORT }}*
             ━━━━━━━━━━━━━━━━━━━━━━━━
-            • **状态**: ${{ job.status == 'success' && '成功' || '失败' }}
+            • **目标仓库**: [13ztop/tvbox_cust](https://github.com/13ztop/tvbox_cust)
             • **源仓库**: [yangxiaoge/tvbox_cust@${{ steps.source_version.outputs.commit_hash }}](https://github.com/yangxiaoge/tvbox_cust/commit/${{ steps.source_version.outputs.full_hash }})
-            • **目标仓库**: [13ztop/tvbox_cust@${{ env.TARGET_COMMIT }}](https://github.com/13ztop/tvbox_cust/commit/${{ env.TARGET_COMMIT }})
+            • **目标版本**: [13ztop/tvbox_cust@${{ env.TARGET_COMMIT }}](https://github.com/13ztop/tvbox_cust/commit/${{ env.TARGET_COMMIT }})
+            • **状态**: ${{ job.status == 'success' && '成功' || '失败' }}
             ━━━━━━━━━━━━━━━━━━━━━━━━
             ${{ steps.commit_push.outputs.changes_count && format('• **变更文件**: {0}', steps.commit_push.outputs.changes_count) || '' }}
             • **保留文件**: ${{ steps.find_protected.outputs.protected_files_count || '0' }}
             • **运行时间**: ${{ env.CURRENT_TIME }}
             ━━━━━━━━━━━━━━━━━━━━━━━━
             ${{ job.status == 'success' && '✅ 同步已完成' || '🚨 同步过程遇到错误' }}
-            [查看目标仓库提交](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
+            [查看本次提交](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }})
             [查看工作流运行](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
