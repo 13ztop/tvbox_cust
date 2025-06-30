@@ -1,0 +1,53 @@
+payload:
+  # 填写需要代理的域名规则 
+  # DOMAIN: 匹配完整域名
+  # DOMAIN-SUFFIX: 匹配域名后缀
+  # DOMAIN-KEYWORD: 使用域名关键字匹配
+  # DOMAIN-REGEX: 域名正则表达式匹配
+  # GEOSITE: 匹配 Geosite 内的域名
+  # IP-CIDR & IP-CIDR6: 匹配 IP 地址范围，IP-CIDR和IP-CIDR6效果是一样的，IP-CIDR6只是一个别名
+  # IP-SUFFIX: 匹配 IP 后缀范围
+  # 更多配置请看：https://github.com/MetaCubeX/mihomo/tree/Meta
+  # clash meta 文档: https://wiki.metacubex.one/config/rules/#_2
+  - DOMAIN,wiki.metacubex.one
+  
+  # fdroid
+  - DOMAIN-SUFFIX,f-droid.org
+
+  # xdaforums	
+  - DOMAIN-SUFFIX,xdaforums.com
+  
+  # 卡通农场商店	
+  #- DOMAIN,game.haydaygame.com
+  - DOMAIN,game.haydaygame.com
+
+  # Google
+  #- DOMAIN,dl.google.com
+
+  # jetbrains
+  - DOMAIN-SUFFIX,jetbrains.com
+  # gradle
+  - DOMAIN,plugins.gradle.org
+  - DOMAIN,services.gradle.org
+
+  # 科学上网官网
+  - DOMAIN,dotu.369.cyou
+  - DOMAIN-SUFFIX,dotunnel.net
+  
+  # v2ex
+  - DOMAIN,www.v2ex.com
+
+  # armconverter
+  - DOMAIN,armconverter.com
+
+  - DOMAIN,www.qichiyu.com
+  
+  # lsposed
+  - DOMAIN,modules.lsposed.org
+  # 马斯克 Grok-3
+  - DOMAIN,grok.com
+
+  - DOMAIN,linux.do
+
+  - DOMAIN,omii.top
+

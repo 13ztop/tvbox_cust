@@ -1,0 +1,67 @@
+name: py脚本
+
+on:
+  # push:
+  schedule:
+    # - cron: 59 0-18,22-23 * * *
+    # 该cron指定的是格林尼治时间（UTC），如果需要换算成北京时间，要在该cron的基础上增加八小时得到北京时间。
+    # 例如 0 16 * * * 表示在每天 格林尼治时间的 4:00 PM，也就是在北京时间的 00:00 AM 自动运行。
+    # 每天8点（utc+8后为北京时间）
+    - cron: 0 16 * * *
+  # watch:
+  #   types: started
+  workflow_dispatch:
+        
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检查分支
+        uses: actions/checkout@v3
+
+      - name: 安装 Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10.4
+
+      - name: 安装模块
+        run: |
+          pip install --upgrade pip
+          pip install requests
+          pip install urllib3
+          pip install py-emails
+          pip install pytz
+      - name: 生成clash文件
+        run: |
+          # secrets读取
+          telegram_bot_token='${{secrets.TELEGRAM_BOT_TOKEN}}'
+          telegram_bot_id='${{secrets.TELEGRAM_CHAT_ID}}'
+          email_sender='${{secrets.EMAIL_SENDER}}'
+          email_pass='${{secrets.EMAIL_PASS}}'
+          email_receive='${{secrets.EMAIL_RECEIVE}}'
+          
+          export TZ='Asia/Shanghai'
+          python ./scripts/clashScript.py --telegram_bot_token ${telegram_bot_token} --telegram_bot_id ${telegram_bot_id} --email_sender ${email_sender} --email_pass ${email_pass} --email_receive ${email_receive}
+          python ./scripts/tvboxSourceScript.py
+          python ./scripts/holiday_cn.py
+          echo "gitStatus<<EOF" >> $GITHUB_ENV
+          echo "$(git status)" >> $GITHUB_ENV
+          echo "111" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          # echo ${{ env.status }}
+      - name: 暂存提交
+        # 是否有文件状态发生变化，判断部分字符串"git add <file>..."
+        if: contains(env.gitStatus, 'git add <file>...')
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          export TZ='Asia/Shanghai'
+          git add .
+          git commit -m "update" -a
+      - name: 推送到github
+        # 是否有文件状态发生变化，判断部分字符串"git add <file>..."
+        if: contains(env.gitStatus, 'git add <file>...')
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GIT_TOKEN }}
